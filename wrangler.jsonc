@@ -1,0 +1,9 @@
+{
+  "name": "rrcop-site-rebuild",
+  "compatibility_date": "2026-09-09",
+  "main": "./_worker.js",
+  "assets": {
+    "directory": "./_site",
+    "binding": "ASSETS"
+  }
+}
