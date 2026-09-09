@@ -80,9 +80,39 @@ async function handleCallback(request, env) {
   }
 }
 
+async function requireAdminAuth(request, env) {
+  const expectedPassword = env.ADMIN_PASSWORD;
+  if (!expectedPassword) {
+    // No password configured -- fail closed rather than leaving /admin open.
+    return new Response('Admin access is not configured.', { status: 503 });
+  }
+
+  const authHeader = request.headers.get('Authorization') || '';
+  const [scheme, encoded] = authHeader.split(' ');
+
+  if (scheme === 'Basic' && encoded) {
+    const decoded = atob(encoded);
+    const separatorIndex = decoded.indexOf(':');
+    const password = separatorIndex === -1 ? decoded : decoded.slice(separatorIndex + 1);
+    if (password === expectedPassword) {
+      return null; // authorized
+    }
+  }
+
+  return new Response('Authentication required.', {
+    status: 401,
+    headers: { 'WWW-Authenticate': 'Basic realm="RRCoP Admin"' },
+  });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    if (url.pathname === '/admin' || url.pathname.startsWith('/admin/')) {
+      const authResponse = await requireAdminAuth(request, env);
+      if (authResponse) return authResponse;
+    }
 
     if (url.pathname === '/api/auth') {
       return handleAuth(request, env);
