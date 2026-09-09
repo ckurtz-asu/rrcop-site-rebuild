@@ -21,7 +21,7 @@ This project worked towards these primary objectives:
 
 1. **Build a Community** — The Regulated Research Community of Practice (RRCoP) builds a network of people able to help each other in implementing an affordable but effective cybersecurity and compliance program at academic institutions.
 
-   Resources developed: [Participation](/about/whos-participating), [HigherEdCUI Slack](/join), [Regulated Workshop Series](/resources/peer-practices/workshops/2020-community-workshops), [Subscribe](/join), [Regulated Research Benchmark Study](https://www.regulatedresearch.org/peer-practices#h.6mrzdt3m5uqn), Collaborating Communities, [Partnerships](/about/partnerships)
+   Resources developed: [Participation](/about/whos-participating), [HigherEdCUI Slack](/join), [Regulated Workshop Series](/resources/peer-practices/workshops/2020-community-workshops), [Subscribe](/join), [Regulated Research Benchmark Study](https://www.regulatedresearch.org/resources/peer-practices#h.6mrzdt3m5uqn), Collaborating Communities, [Partnerships](/about/partnerships)
 
 2. **Build Resources** — Establish a leadership training and development program accelerating availability of distributed university resources.
 

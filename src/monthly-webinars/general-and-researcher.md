@@ -115,7 +115,7 @@ Brief updates of the activities happening beyond RRCoP that have impact on this 
 
 1. Assorted Updates: RRCoP Website / July Agenda / COGR / FDP
 2. CMMC-Academic Advisory Council (CMMC-AAC)
-3. Association of University Export Control Officers (AUECO)
+3. Association of Export Control Officers (AUECO)
 4. EDUCAUSE 800-171 Compliance Community Group
 5. Coalition for Academic Scientific Computation (CASC)
 
