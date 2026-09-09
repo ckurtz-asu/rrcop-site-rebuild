@@ -1,0 +1,43 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# For local editing without Cloudflare Access / Identity wired up yet:
+#   npx decap-server
+# and uncomment the line below, then run `npm run serve` alongside it.
+# local_backend: true
+
+publish_mode: editorial_workflow
+
+media_folder: "src/img/uploads"
+public_folder: "/img/uploads"
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "Home"
+        name: "home"
+        file: "src/index.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "About"
+        name: "about"
+        file: "src/about.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "resources"
+    label: "Resources"
+    folder: "src/content/resources"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Order", name: "order", widget: "number", default: 0 }
+      - { label: "Summary", name: "summary", widget: "string", required: false }
+      - { label: "Link", name: "link", widget: "string", required: false }
+      - { label: "Permalink", name: "permalink", widget: "boolean", default: false, required: false }
+      - { label: "Body", name: "body", widget: "markdown" }

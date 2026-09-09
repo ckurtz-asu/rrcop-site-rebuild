@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} | Regulated Research Community of Practice</title>
+  <meta name="description" content="{{ description or site.description }}">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">Regulated Research Community of Practice</a>
+      <nav aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/resources/">Resources</a>
+        <a href="/about/">About</a>
+        <a href="/join/" class="cta">Join</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    {{ content | safe }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>This project is led by Carolyn Ellis, Erik Deumens, Laura Raderman with support from
+        <a href="http://trustedci.org">TrustedCI.org</a>.</p>
+      <p>Contact <a href="mailto:info@regulatedresearch.org">info@regulatedresearch.org</a> for more information on the project.</p>
+      <p class="fine-print">This material is based upon activities supported by the National Science Foundation and
+        Interagency Agreement #A2407-049-089-064206.0. Any opinions, recommendations, findings, or conclusions expressed
+        are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.</p>
+      <p><a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2409859&amp;HistoricalAwards=false">NSF Award #2409859</a></p>
+      <p class="test-banner">TEST BUILD — content structure demo, not the production site.</p>
+    </div>
+  </footer>
+</body>
+</html>

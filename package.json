@@ -1,0 +1,14 @@
+{
+  "name": "rrcop-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Regulated Research Community of Practice website — Eleventy + Decap CMS rebuild (test)",
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "debug": "DEBUG=* eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}
