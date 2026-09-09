@@ -1,8 +1,11 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: ckurtz-asu/rrcop-site-rebuild
   branch: main
+  base_url: https://rrcop-site-rebuild.kristoff.workers.dev
+  auth_endpoint: api/auth
 
-# For local editing without Cloudflare Access / Identity wired up yet:
+# For local editing without Cloudflare Pages Functions running:
 #   npx decap-server
 # and uncomment the line below, then run `npm run serve` alongside it.
 # local_backend: true
