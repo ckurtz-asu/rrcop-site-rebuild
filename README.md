@@ -13,7 +13,9 @@ original site.
 - **[Eleventy (11ty)](https://www.11ty.dev/)** — static site generator, markdown + Nunjucks
 - **[Decap CMS](https://decapcms.org/)** — git-based headless CMS (`/admin`), no separate
   hosted backend; content commits directly to this repo as markdown
-- **Cloudflare Pages** — target host (not yet wired up in this pass; see below)
+- **Cloudflare Worker (static assets)** — live host, auto-deploys from `main` via
+  Cloudflare's Git integration. Note: Cloudflare deprecated Pages in April 2025, so this
+  is a **Worker**, not a legacy Pages project — see the architecture note below.
 
 ## Local development
 
@@ -84,11 +86,44 @@ This is a structural proof of concept, not a full migration:
   or a third-party form service)
 - No site search (Google Sites' built-in search → would need Pagefind/Lunr or similar)
 - Original site's institution map widget not reproduced
-- CMS auth is wired (GitHub OAuth via Pages Functions + Cloudflare Access) but requires
+- CMS auth is wired (GitHub OAuth via `_worker.js` + Cloudflare Access) but requires
   the one-time GitHub OAuth App + Cloudflare dashboard setup described above before it
   actually works end-to-end — see "Editing content via Decap CMS."
 
 ## Deploying
 
-Not yet connected to Cloudflare Pages Git integration. For this test pass, build locally
-and deploy the `_site/` output directory manually.
+Live and auto-deploying: pushes to `main` trigger a Cloudflare Worker Git-integration
+build (`npm run build`, output `_site/`) automatically. No manual deploy step needed for
+the site itself — see "Handoff notes" below for what a new deploy TARGET (different
+hostname/account) would need reconfigured.
+
+## Handoff notes (for a new maintainer / new environment)
+
+This repo is portable, but three things are **environment-specific** and live outside
+git, so they don't travel with a clone:
+
+1. **The Cloudflare Worker itself.** The live site is a Cloudflare Worker named
+   `rrcop-site-rebuild` under the original owner's Cloudflare account, connected via Git
+   integration to this GitHub repo's `main` branch. A new maintainer either needs access
+   to that same Cloudflare account/Worker, or must create their own Worker (Workers &
+   Pages → Create → Connect to Git → this repo, no build command override needed since
+   `wrangler.jsonc` at the repo root already declares `main`/`assets.directory`) — which
+   will get its own `*.workers.dev` hostname.
+
+2. **`GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`.** These live in the Worker's
+   Settings → Variables and Secrets, not in this repo (correctly — they're secrets).
+   They are tied to a **specific GitHub OAuth App**, which is in turn tied to a
+   **specific callback URL** (`https://<hostname>/api/callback`). If you deploy to a
+   *different* hostname (new Worker, custom domain, forked repo under a different
+   account), you need a **new GitHub OAuth App** with that hostname's callback URL, and
+   the corresponding new Client ID/Secret added to that Worker's settings — the old
+   OAuth App's credentials will not work against a new hostname.
+
+3. **Cloudflare Access policy.** Also account/zone-specific, not in this repo. A new
+   deploy target needs its own Access application configured under Zero Trust → Access →
+   Applications, scoped to whoever should be allowed into `/admin`.
+
+**In short:** cloning this repo gets you 100% of the code and content. Getting a *live,
+editable* copy of the site also requires steps 1–3 above, redone against the new
+Cloudflare account/hostname — there is no way to make those portable via git, since they
+are inherently tied to a specific OAuth App + specific Cloudflare account's secrets.
