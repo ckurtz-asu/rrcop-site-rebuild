@@ -5,6 +5,7 @@ permalink: /
 ---
 
 <section class="hero">
+  <img src="/img/uploads/migrated/homepage-hero.png" alt="RRCoP community" class="hero-image">
   <h1>Regulated Research Community of Practice (RRCoP)</h1>
 </section>
 
@@ -38,6 +39,30 @@ permalink: /
   <ul>
     <li>September 9, 2026, 11am PT / 2pm ET — <a href="/join/">Join</a></li>
   </ul>
+</section>
+
+<section>
+  <h2>Highlighted Resources</h2>
+  <div class="curated-resources">
+    <a href="/resources/peer-practices/purdues-end-to-end-cui-workflows/" class="curated-card">
+      <img src="/img/uploads/migrated/end-to-end-cui-workflow.png" alt="End-to-End CUI Workflow">
+      <span>End-to-End CUI Workflow</span>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>Curated Resources</h2>
+  <div class="curated-resources">
+    <a href="/curated/journeys-to-assessment/" class="curated-card">
+      <img src="/img/uploads/migrated/journey-towards-assessment.png" alt="Journey towards Assessment">
+      <span>Resources of Peers on their Regulated Research (CMMC, PHI, SOC2...) & Assessment Journeys</span>
+    </a>
+    <a href="/curated/partnerships-community-voices/" class="curated-card">
+      <img src="/img/uploads/migrated/partners-community-voices.png" alt="Partners and Community Voices">
+      <span>Resources from Partner Communities</span>
+    </a>
+  </div>
 </section>
 
 <section>
