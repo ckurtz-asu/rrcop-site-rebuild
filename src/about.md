@@ -3,8 +3,7 @@ title: About
 layout: base.njk
 permalink: /about/
 ---
-
-# About RRCoP
+# About RRCoP - test site
 
 We are research institutions that support research subject to compliance regulations
 (CMMC, PHI, SOC 2, and more), working together to grow the knowledge pool and produce
