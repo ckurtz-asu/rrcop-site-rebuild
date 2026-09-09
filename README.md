@@ -26,17 +26,26 @@ Site builds to `_site/` and serves at `http://localhost:8080`.
 
 ## Editing content via Decap CMS
 
-The CMS UI lives at `/admin`. Auth is wired up via a **GitHub OAuth backend** running on
-Cloudflare Pages Functions (`functions/api/auth.js` + `functions/api/callback.js`, vendored
-from [SubhenduX/decap-cms-cloudflare-pages](https://github.com/SubhenduX/decap-cms-cloudflare-pages)),
-gated by **Cloudflare Access**. Setup is split between what's already done in this repo and
-what only you can do in the GitHub/Cloudflare dashboards:
+The CMS UI lives at `/admin`. Auth is wired up via a **GitHub OAuth backend** running
+directly in this project's Cloudflare Worker (`_worker.js` + `wrangler.jsonc`), gated by
+**Cloudflare Access**.
+
+> **Note on architecture:** Cloudflare deprecated Pages in April 2025 in favor of Workers
+> with static assets. The "Connect to Git" flow in the dashboard now creates a **Worker**
+> project, not a legacy Pages project — which means the `functions/api/*.js` "Pages
+> Functions" file-based-routing convention (used by most Decap+Cloudflare tutorials,
+> including the one this was originally based on) is **never auto-detected** here. This
+> repo uses the Workers-native equivalent instead: a single `_worker.js` that handles
+> `/api/auth` and `/api/callback` directly, then falls through to the `ASSETS` binding
+> (the built Eleventy `_site/` output) for every other path. `wrangler.jsonc` wires the
+> `main` entrypoint and the `assets.directory`.
 
 ### Already done (in this repo)
 
-- `functions/api/auth.js` — redirects to GitHub's OAuth authorize endpoint
-- `functions/api/callback.js` — exchanges the OAuth `code` for an access token and posts it
-  back to the Decap popup window
+- `_worker.js` — handles `/api/auth` (redirects to GitHub's OAuth authorize endpoint) and
+  `/api/callback` (exchanges the OAuth `code` for an access token, posts it back to the
+  Decap popup window), falls through to `env.ASSETS.fetch(request)` for everything else
+- `wrangler.jsonc` — `main: "./_worker.js"`, `assets.directory: "./_site"`
 - `src/admin/config.yml` — `backend.name: github`, pointed at this repo/branch, with
   `auth_endpoint: api/auth`
 
@@ -45,29 +54,19 @@ what only you can do in the GitHub/Cloudflare dashboards:
 1. **Create a GitHub OAuth App** — [github.com/settings/developers](https://github.com/settings/developers) →
    OAuth Apps → New OAuth App.
    - **Homepage URL**: `https://rrcop-site-rebuild.kristoff.workers.dev`
-   - **Authorization callback URL**: same homepage URL (per the template's README, a
-     subdirectory of the homepage URL works and is more reliable here than pointing
-     directly at `/api/callback`)
+   - **Authorization callback URL**: `https://rrcop-site-rebuild.kristoff.workers.dev/api/callback`
    - Save the **Client ID**, generate and save the **Client Secret**.
 
-2. **Add the OAuth credentials to Cloudflare Pages** — in the `rrcop-site-rebuild` Pages
-   project → Settings → Environment variables → add for the **Production** environment:
-   - `GITHUB_CLIENT_ID` = the Client ID from step 1
-   - `GITHUB_CLIENT_SECRET` = the Client Secret from step 1 (mark as **Secret**, not plaintext)
+2. **Add the OAuth credentials to the Worker** — in the `rrcop-site-rebuild` Worker's
+   Settings → Variables and Secrets → add:
+   - `GITHUB_CLIENT_ID` (Text) = the Client ID from step 1
+   - `GITHUB_CLIENT_SECRET` (Secret) = the Client Secret from step 1
 
-   Redeploy (or trigger a new deployment) after adding these — Pages Functions env vars
-   only take effect on the next build.
+   Redeploy (or trigger a new deployment) after adding these.
 
-3. **Gate `/admin/*` with Cloudflare Access** — in the Cloudflare dashboard for this zone
-   (requires the domain/Worker route to be on a zone Access can bind to — a bare
-   `*.workers.dev`/`*.pages.dev` subdomain needs Access configured under **Zero Trust** →
-   **Access** → **Applications**, self-hosted application type):
-   - **Application domain**: `rrcop-site-rebuild.kristoff.workers.dev/admin`
-   - **Session duration**: your call (e.g. 24h for a test site)
-   - **Policy**: Allow — Include rule scoped to your identity (email, or your identity
-     provider group if you have Access already set up with one)
-   - This adds a Cloudflare-login prompt *before* the GitHub OAuth screen even loads —
-     defense in depth beyond "must be a GitHub collaborator on this repo."
+3. **Gate `/admin/*` (or the whole hostname) with Cloudflare Access** — under Zero Trust →
+   Access → Applications, self-hosted application type, pointed at
+   `rrcop-site-rebuild.kristoff.workers.dev`, with a policy scoped to your identity.
 
 4. **Verify**: visit `/admin/`, pass the Cloudflare Access login, click "Login with GitHub,"
    authorize the OAuth app, and you should land in the Decap CMS editor with the Pages/
