@@ -102,11 +102,27 @@ a { color: var(--color-accent); }
   display: block;
 }
 
-.hero-image {
-  max-width: 100%;
-  border-radius: 6px;
+.hero {
+  position: relative;
   margin-bottom: 1rem;
-  display: block;
+  background-image: url("/img/uploads/migrated/hero-banner-pattern.png");
+  background-repeat: repeat;
+  background-size: 320px auto;
+  border-radius: 6px;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero h1 {
+  width: 90%;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  font-size: 1.9rem;
 }
 
 .linkedin-icon {
