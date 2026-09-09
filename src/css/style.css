@@ -102,11 +102,30 @@ a { color: var(--color-accent); }
   display: block;
 }
 
+.hero {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
 .hero-image {
   max-width: 100%;
+  width: 100%;
   border-radius: 6px;
-  margin-bottom: 1rem;
   display: block;
+}
+
+.hero h1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  font-size: 1.9rem;
 }
 
 .linkedin-icon {
