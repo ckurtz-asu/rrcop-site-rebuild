@@ -48,6 +48,14 @@ permalink: /
       <img src="/img/uploads/migrated/end-to-end-cui-workflow.png" alt="End-to-End CUI Workflow">
       <span>End-to-End CUI Workflow</span>
     </a>
+    <a href="https://youtu.be/40b773RMLKs" class="curated-card">
+      <img src="https://i.ytimg.com/vi/40b773RMLKs/hqdefault.jpg" alt="CUI on HPC (YouTube video thumbnail)">
+      <span>CUI on HPC</span>
+    </a>
+    <a href="https://youtu.be/GFSc1jxybFU" class="curated-card">
+      <img src="https://i.ytimg.com/vi/GFSc1jxybFU/hqdefault.jpg" alt="Two Journeys to a Matured Cost Model (YouTube video thumbnail)">
+      <span>Two Journeys to a Matured Cost Model</span>
+    </a>
   </div>
 </section>
 
