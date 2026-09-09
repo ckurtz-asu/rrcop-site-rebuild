@@ -96,3 +96,49 @@ a { color: var(--color-accent); }
   padding: 0.75rem 0;
   border-bottom: 1px solid #eef0f2;
 }
+
+.brand-logo {
+  height: 36px;
+  display: block;
+}
+
+.hero-image {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.linkedin-icon {
+  height: 24px;
+  vertical-align: middle;
+}
+
+.curated-resources {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.curated-card {
+  display: block;
+  text-decoration: none;
+  color: var(--color-fg);
+  border: 1px solid #e5e8eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.curated-card img {
+  width: 100%;
+  display: block;
+}
+.curated-card span {
+  display: block;
+  padding: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent-dark);
+}
+
+main img {
+  max-width: 100%;
+  border-radius: 4px;
+}
