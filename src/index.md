@@ -5,7 +5,6 @@ permalink: /
 ---
 
 <section class="hero">
-  <img src="/img/uploads/migrated/homepage-hero.png" alt="RRCoP community" class="hero-image">
   <h1>Regulated Research Community of Practice (RRCoP)</h1>
 </section>
 
