@@ -28,9 +28,13 @@ Site builds to `_site/` and serves at `http://localhost:8080`.
 
 ## Editing content via Decap CMS
 
-The CMS UI lives at `/admin`. Auth is wired up via a **GitHub OAuth backend** running
-directly in this project's Cloudflare Worker (`_worker.js` + `wrangler.jsonc`), gated by
-**Cloudflare Access**.
+The CMS UI lives at `/admin`. The **site itself is public** — only `/admin` requires
+authentication, via two layers:
+
+1. A **shared password**, enforced directly in `_worker.js` (HTTP Basic Auth), checked
+   against the `ADMIN_PASSWORD` Worker secret.
+2. A **GitHub OAuth backend** running in the same Worker (`_worker.js` + `wrangler.jsonc`),
+   which is what actually authorizes writes back to this repo through Decap.
 
 > **Note on architecture:** Cloudflare deprecated Pages in April 2025 in favor of Workers
 > with static assets. The "Connect to Git" flow in the dashboard now creates a **Worker**
@@ -38,15 +42,19 @@ directly in this project's Cloudflare Worker (`_worker.js` + `wrangler.jsonc`), 
 > Functions" file-based-routing convention (used by most Decap+Cloudflare tutorials,
 > including the one this was originally based on) is **never auto-detected** here. This
 > repo uses the Workers-native equivalent instead: a single `_worker.js` that handles
-> `/api/auth` and `/api/callback` directly, then falls through to the `ASSETS` binding
-> (the built Eleventy `_site/` output) for every other path. `wrangler.jsonc` wires the
-> `main` entrypoint and the `assets.directory`.
+> `/api/auth` and `/api/callback` directly, gates `/admin*` behind HTTP Basic Auth, and
+> falls through to the `ASSETS` binding (the built Eleventy `_site/` output) for every
+> other path. `wrangler.jsonc` wires the `main` entrypoint and the `assets.directory`.
 
 ### Already done (in this repo)
 
-- `_worker.js` — handles `/api/auth` (redirects to GitHub's OAuth authorize endpoint) and
-  `/api/callback` (exchanges the OAuth `code` for an access token, posts it back to the
-  Decap popup window), falls through to `env.ASSETS.fetch(request)` for everything else
+- `_worker.js` — gates `/admin` and `/admin/*` behind HTTP Basic Auth (checked against the
+  `ADMIN_PASSWORD` secret; fails closed with a 503 if the secret isn't set), handles
+  `/api/auth` (redirects to GitHub's OAuth authorize endpoint) and `/api/callback`
+  (exchanges the OAuth `code` for an access token, posts it back to the Decap popup
+  window) without the Basic Auth check (they're reached mid-OAuth-flow from inside
+  `/admin`, not directly by a visitor), falls through to `env.ASSETS.fetch(request)` for
+  everything else
 - `wrangler.jsonc` — `main: "./_worker.js"`, `assets.directory: "./_site"`
 - `src/admin/config.yml` — `backend.name: github`, pointed at this repo/branch, with
   `auth_endpoint: api/auth`
@@ -59,16 +67,38 @@ directly in this project's Cloudflare Worker (`_worker.js` + `wrangler.jsonc`), 
    - **Authorization callback URL**: `https://rrcop-site-rebuild.kristoff.workers.dev/api/callback`
    - Save the **Client ID**, generate and save the **Client Secret**.
 
-2. **Add the OAuth credentials to the Worker** — in the `rrcop-site-rebuild` Worker's
-   Settings → Variables and Secrets → add:
+2. **Add the OAuth credentials and admin password to the Worker** — in the
+   `rrcop-site-rebuild` Worker's Settings → Variables and Secrets → add:
    - `GITHUB_CLIENT_ID` (Text) = the Client ID from step 1
    - `GITHUB_CLIENT_SECRET` (Secret) = the Client Secret from step 1
+   - `ADMIN_PASSWORD` (Secret) = whatever password you want to gate `/admin` with
+
+   Redeploy (or trigger a new deployment) after adding these.
+
+3. **Remove the zone-level Cloudflare Access policy, if one still exists** — under
+   Zero Trust → Access → Applications, delete or disable any application gating the
+   whole `rrcop-site-rebuild.kristoff.workers.dev` hostname. This has to be done in the
+   dashboard; there's no way to change it from this repo. Leaving it in place will keep
+   the entire site behind Access even after the Basic Auth change above, which defeats
+   the point of making the site public.
+
+4. **Verify**: visit the homepage directly (should load with no login prompt), then visit
+   `/admin/`, enter the `ADMIN_PASSWORD` at the browser's Basic Auth prompt, click "Login
+   with GitHub," authorize the OAuth app, and you should land in the Decap CMS editor with
+   the Pages/Resources collections from `config.yml`.
+
+For local editing without any of the above, run `npx decap-server` alongside `npm run serve`
+and uncomment `local_backend: true` in `src/admin/config.yml`.
 
    Redeploy (or trigger a new deployment) after adding these.
 
 3. **Gate `/admin/*` (or the whole hostname) with Cloudflare Access** — under Zero Trust →
    Access → Applications, self-hosted application type, pointed at
    `rrcop-site-rebuild.kristoff.workers.dev`, with a policy scoped to your identity.
+
+   **Superseded** — see the "You need to do" list above: `/admin` is now gated by a
+   Worker-level password (`ADMIN_PASSWORD`) instead of Cloudflare Access, so the site
+   itself can stay public. Remove any Access application still gating this hostname.
 
 4. **Verify**: visit `/admin/`, pass the Cloudflare Access login, click "Login with GitHub,"
    authorize the OAuth app, and you should land in the Decap CMS editor with the Pages/
