@@ -1,0 +1,41 @@
+backend:
+  name: test-repo
+
+# Demo instance -- runs entirely in-browser with an in-memory fake Git backend.
+# No authentication required, and nothing here ever writes to the real repo.
+# For the real editing experience (commits to GitHub), see /admin instead.
+
+publish_mode: editorial_workflow
+
+media_folder: "src/img/uploads"
+public_folder: "/img/uploads"
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "Home"
+        name: "home"
+        file: "src/index.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "About"
+        name: "about"
+        file: "src/about.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "resources"
+    label: "Resources"
+    folder: "src/content/resources"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Order", name: "order", widget: "number", default: 0 }
+      - { label: "Summary", name: "summary", widget: "string", required: false }
+      - { label: "Link", name: "link", widget: "string", required: false }
+      - { label: "Permalink", name: "permalink", widget: "boolean", default: false, required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
