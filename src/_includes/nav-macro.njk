@@ -1,0 +1,26 @@
+{# Recursive nav-item macro. Supports arbitrary nesting depth (the real
+   hierarchy goes 4 levels under Resources -> Peer Practices -> Workshops).
+   Unlike production's own nav -- where a branch's disclosure arrow only
+   expands the branch matching the CURRENT page, leaving sibling branches
+   permanently collapsed until you click blind into them -- every branch
+   here is independently expandable from any page, via the toggle script
+   in base.njk. #}
+{% macro renderItem(item, currentUrl) %}
+<li class="nav-item{% if item.children %} has-children{% endif %}">
+  <div class="nav-row">
+    <a href="{{ item.href }}" class="nav-link{% if item.cta %} cta{% endif %}"{% if item.href == currentUrl %} aria-current="page"{% endif %}>{{ item.label }}</a>
+    {% if item.children %}
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-label="Show {{ item.label }} sub-pages">
+      <span aria-hidden="true">▸</span>
+    </button>
+    {% endif %}
+  </div>
+  {% if item.children %}
+  <ul class="nav-children">
+    {% for child in item.children %}
+      {{ renderItem(child, currentUrl) }}
+    {% endfor %}
+  </ul>
+  {% endif %}
+</li>
+{% endmacro %}
