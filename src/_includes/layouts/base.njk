@@ -15,15 +15,16 @@
       <a class="brand" href="/">
         <img src="/img/uploads/migrated/rrcop-logo.png" alt="Regulated Research Community of Practice" class="brand-logo">
       </a>
-      <nav aria-label="Primary">
-        <a href="/">Home</a>
-        <a href="/monthly-webinars/">Monthly Webinars</a>
-        <a href="/resources/">Resources</a>
-        <a href="/compliance/">Compliance</a>
-        <a href="/federal-updates/">Federal Updates</a>
-        <a href="/advocacy/">Advocacy</a>
-        <a href="/about/">About</a>
-        <a href="/join/" class="cta">Join</a>
+      <button type="button" id="nav-sidebar-toggle" aria-expanded="false" aria-controls="primary-nav">
+        <span aria-hidden="true">☰</span> Menu
+      </button>
+      {% from "nav-macro.njk" import renderItem %}
+      <nav aria-label="Primary" id="primary-nav">
+        <ul class="nav-tree">
+          {% for item in nav %}
+            {{ renderItem(item, page.url) }}
+          {% endfor %}
+        </ul>
       </nav>
     </div>
   </header>
@@ -45,5 +46,48 @@
       <p class="test-banner">TEST BUILD — content structure demo, not the production site.</p>
     </div>
   </footer>
+
+  <script>
+    // Nav behavior:
+    // 1. Each .nav-toggle button expands/collapses its own .nav-children
+    //    independently -- unlike production, where a sibling branch's
+    //    disclosure only opens by navigating into it.
+    // 2. On load, auto-expand every ancestor branch of the current page so
+    //    a visitor lands with their own location already visible in the tree.
+    (function () {
+      var nav = document.getElementById("primary-nav");
+      if (!nav) return;
+
+      nav.addEventListener("click", function (event) {
+        var toggle = event.target.closest(".nav-toggle");
+        if (!toggle) return;
+        var item = toggle.closest(".nav-item");
+        var expanded = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", String(!expanded));
+        item.classList.toggle("is-open", !expanded);
+      });
+
+      var current = nav.querySelector('.nav-link[aria-current="page"]');
+      if (current) {
+        var node = current.closest(".nav-item");
+        while (node) {
+          node.classList.add("is-open");
+          var toggle = node.querySelector(":scope > .nav-row > .nav-toggle");
+          if (toggle) toggle.setAttribute("aria-expanded", "true");
+          var parentList = node.parentElement;
+          node = parentList ? parentList.closest(".nav-item") : null;
+        }
+      }
+
+      var sidebarToggle = document.getElementById("nav-sidebar-toggle");
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener("click", function () {
+          var open = sidebarToggle.getAttribute("aria-expanded") === "true";
+          sidebarToggle.setAttribute("aria-expanded", String(!open));
+          nav.classList.toggle("is-open", !open);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

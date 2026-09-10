@@ -52,18 +52,131 @@ body {
   text-decoration: none;
   font-size: 1.05rem;
 }
-.site-header nav a {
-  margin-left: 1.25rem;
+
+#nav-sidebar-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid #e5e8eb;
+  border-radius: 4px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.95rem;
+  color: var(--color-fg);
+  cursor: pointer;
+}
+
+/* Nested primary nav -- flat left-to-right on wide screens, each item's
+   children hidden in a dropdown-style panel until its toggle is opened.
+   On narrow screens this becomes a collapsible sidebar list instead. */
+.nav-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.nav-item {
+  position: relative;
+}
+.nav-row {
+  display: flex;
+  align-items: center;
+}
+.nav-link {
+  display: inline-block;
+  padding: 0.4rem 0.6rem;
   color: var(--color-fg);
   text-decoration: none;
+  border-radius: 4px;
 }
-.site-header nav a:first-child { margin-left: 0; }
-.site-header nav a.cta {
+.nav-link:hover,
+.nav-link[aria-current="page"] {
+  background: #eef4fa;
+  color: var(--color-accent-dark);
+}
+.nav-link.cta {
   background: var(--color-accent);
   color: #fff;
   padding: 0.4rem 0.9rem;
-  border-radius: 4px;
 }
+.nav-link.cta:hover {
+  background: var(--color-accent-dark);
+  color: #fff;
+}
+
+.nav-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.35rem;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.nav-toggle span {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+.nav-item.is-open > .nav-row > .nav-toggle span {
+  transform: rotate(90deg);
+}
+
+.nav-children {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0 0.35rem 0.9rem;
+  display: none;
+  min-width: 220px;
+}
+.nav-item.is-open > .nav-children {
+  display: block;
+}
+
+/* Top-level dropdowns float over the page on wide screens; nested levels
+   stay inline underneath their parent so deep branches (Resources ->
+   Peer Practices -> Workshops) read as an indented outline rather than a
+   stack of overlapping flyouts. */
+@media (min-width: 61rem) {
+  .nav-tree > .nav-item.has-children > .nav-children {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    border: 1px solid #e5e8eb;
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    padding: 0.5rem;
+    z-index: 20;
+  }
+  .nav-tree > .nav-item .nav-children .nav-children {
+    padding-left: 1rem;
+  }
+}
+
+@media (max-width: 60.9375rem) {
+  #nav-sidebar-toggle {
+    display: inline-flex;
+  }
+  nav[aria-label="Primary"] {
+    display: none;
+    width: 100%;
+    order: 3;
+  }
+  nav[aria-label="Primary"].is-open {
+    display: block;
+  }
+  .nav-tree {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nav-children {
+    padding-left: 1rem;
+  }
+}
+
 
 main {
   padding: 2rem 1.25rem 3rem;
