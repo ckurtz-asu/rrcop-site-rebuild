@@ -158,3 +158,16 @@ main img {
   max-width: 100%;
   border-radius: 4px;
 }
+
+.expertise-graphic {
+  text-align: center;
+  margin: 0 0 2.5rem;
+}
+
+.expertise-graphic img {
+  max-width: 100%;
+  width: auto;
+  max-height: 480px;
+  margin: 0 auto;
+  border-radius: 4px;
+}
