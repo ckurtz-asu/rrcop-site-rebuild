@@ -12,14 +12,45 @@
       padding: 0.6rem 1rem;
       text-align: center;
       font-size: 0.9rem;
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: 1000;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+      box-sizing: border-box;
+    }
+    /* Decap mounts its app into #nc-root, absolutely-positioned to fill the
+       viewport -- push it down below the fixed banner instead of letting
+       the two overlap. Height is set via inline JS below once the banner
+       has actually rendered, so this stays correct if the banner's own
+       height ever changes (longer text, smaller viewport wrapping to two
+       lines, etc). */
+    #nc-root {
+      padding-top: var(--demo-banner-height, 40px);
+      box-sizing: border-box;
     }
   </style>
 </head>
 <body>
   <div id="demo-banner">Demo mode &mdash; nothing you do here is saved or published. Edits stay in your browser only.</div>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <div id="nc-root"></div>
+  <script defer src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // Decap CMS auto-mounts into #nc-root if present, or otherwise creates
+    // its own root appended to <body>. Measure the real banner height
+    // (it can wrap to two lines on narrow viewports) and expose it as a
+    // CSS variable so #nc-root's padding always matches.
+    function setDemoBannerHeight() {
+      var banner = document.getElementById('demo-banner');
+      if (banner) {
+        document.documentElement.style.setProperty(
+          '--demo-banner-height',
+          banner.offsetHeight + 'px'
+        );
+      }
+    }
+    setDemoBannerHeight();
+    window.addEventListener('resize', setDemoBannerHeight);
+  </script>
 </body>
 </html>

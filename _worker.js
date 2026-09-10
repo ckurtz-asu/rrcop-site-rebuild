@@ -80,6 +80,27 @@ async function handleCallback(request, env) {
   }
 }
 
+async function handleDemoAuth(request) {
+  // Deliberately-broken auth endpoint for /demo. It redirects to GitHub's
+  // authorize URL with an invalid client_id, so GitHub itself rejects the
+  // request (client_id=demo-no-write-access is not a real registered OAuth
+  // App) instead of this Worker silently doing nothing. There is no
+  // corresponding callback handler and no client_secret anywhere for this
+  // flow -- it is structurally incapable of ever producing a real token,
+  // by construction, not just by omission.
+  try {
+    const url = new URL(request.url);
+    const redirectUrl = new URL('https://github.com/login/oauth/authorize');
+    redirectUrl.searchParams.set('client_id', 'demo-no-write-access');
+    redirectUrl.searchParams.set('redirect_uri', url.origin + '/api/callback');
+    redirectUrl.searchParams.set('scope', 'repo user');
+    return Response.redirect(redirectUrl.href, 302);
+  } catch (error) {
+    console.error(error);
+    return new Response(error.message, { status: 500 });
+  }
+}
+
 async function requireAdminAuth(request, env) {
   const expectedPassword = env.ADMIN_PASSWORD;
   if (!expectedPassword) {
@@ -116,6 +137,9 @@ export default {
 
     if (url.pathname === '/api/auth') {
       return handleAuth(request, env);
+    }
+    if (url.pathname === '/api/demo-auth') {
+      return handleDemoAuth(request);
     }
     if (url.pathname === '/api/callback') {
       return handleCallback(request, env);
