@@ -1,8 +1,15 @@
 backend:
-  name: test-repo
+  name: github
+  repo: ckurtz-asu/rrcop-site-rebuild
+  branch: main
+  base_url: https://rrcop-site-rebuild.kristoff.workers.dev
+  auth_endpoint: api/demo-auth
 
-# Demo instance -- runs entirely in-browser with an in-memory fake Git backend.
-# No authentication required, and nothing here ever writes to the real repo.
+# Demo instance -- points at the REAL repo so visitors see real content, but
+# auth_endpoint targets a route with no OAuth App wired up (see _worker.js).
+# Clicking "Login with GitHub" will fail cleanly at GitHub's own authorize
+# screen (invalid client_id) rather than silently doing nothing -- nobody
+# can ever obtain a real write token through this instance.
 # For the real editing experience (commits to GitHub), see /admin instead.
 
 publish_mode: editorial_workflow
