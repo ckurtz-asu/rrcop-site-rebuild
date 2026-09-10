@@ -8,6 +8,10 @@ permalink: /
   <h1>Regulated Research Community of Practice (RRCoP)</h1>
 </section>
 
+<section class="expertise-graphic">
+  <img src="/img/uploads/migrated/homepage-hero.png" alt="Making Expertise Visible: connecting expertise across institutions, disciplines, and communities. A network diagram showing clusters for Export Control, CUI, Research Security, Compliance, Data Security, HPC/Infrastructure, Training, Risk Management, Cost Models, Contracts, Organizational Change Management, Executive Sponsorship, Culture, Communications, and Community Engagement.">
+</section>
+
 <section>
   <h2>Who is RRCoP?</h2>
   <p>We are research institutions that support research subject to compliance regulations,
